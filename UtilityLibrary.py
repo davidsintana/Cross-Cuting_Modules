@@ -3,6 +3,7 @@ import pathlib
 import shutil
 import pandas as pd
 import csv
+import time
 
 
 def path_add_slashes(original_path):
@@ -107,18 +108,21 @@ def import_csv_file(file_path, delimiter):
 
 
 class LogFile:
-    def __init__(self, _log_file_path, _delete_previous_file=False):
+    def __init__(self, _log_file_path, _delete_previous_file=True):
         self.log_file_path = _log_file_path
         self.log_file = None
 
         if _delete_previous_file is True:
-            os.remove(_log_file_path)
+            try:
+                os.remove(_log_file_path)
+            except FileNotFoundError:
+                print("No previous log file")
 
     def write(self, log_line):
         self.log_file = open(self.log_file_path, "a")
-        log_line = log_line + "\n"
+        log_line = time.strftime("%Y.%m.%d-%H:%M:%S - ") + log_line
         print(log_line)
-        self.log_file.write(log_line)
+        self.log_file.write(log_line + "\n")
         self.log_file.close()
 
 
